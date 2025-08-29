@@ -118,10 +118,10 @@
     <div class="cta-line">আপনার পছন্দমতো প্রোডাক্ট পেতে, এখানে ক্লিক করুন</div>
 
     <div class="quick-jumps">
-      <button onclick="scrollToProduct(1)">দুইশ টাকার ডিল </button>
-      <button onclick="scrollToProduct(50)"> ঝুলন্ত সৌন্দর্য</button>
+      <button onclick="scrollToProduct(4)">দুইশ টাকার ডিল </button>
+      <button onclick="scrollToProduct(54)"> ঝুলন্ত সৌন্দর্য</button>
       <button onclick="scrollToProduct(64)"> উলের জাদু</button>
-      <button onclick="scrollToProduct(71)">Discounted</button>
+      <button onclick="scrollToProduct(75)">Discounted Decor</button>
     </div>
   </header>
 
@@ -239,11 +239,14 @@
         case 69: price = 450; break;  case 70: price = 450; break;
         case 71: price = 450; break;  case 72: price = 200; break;
         case 73: price = 700; break;  case 74: price = 400; break;
-        case 75: price = 200; break;  case 76: price = 200; break;
-        case 77: price = 200; break;  case 78: price = 200; break;
-        case 79: price = 200; break;  case 80: price = 200; break;
-        case 81: price = 200; break;  case 82: price = 200; break;
-        case 83: price = 200; break;
+        case 75: price = 100; break;  case 76: price = 100; break;
+        case 77: price = 100; break;  case 78: price = 100; break;
+        case 79: price = 100; break;  case 80: price = 100; break;
+        case 81: price = 100; break;  case 82: price = 100; break;
+        case 83: price = 100; break; case 84: price = 100; break;
+    case 85: price = 100; break;
+    case 86: price = 200; break;
+    case 87: price = 200; break;
       }
       return { id, name:`Product ${id}`, price:price*1.1, originalPrice:price, image:`${id}.jpg` };
     });
