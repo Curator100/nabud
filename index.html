@@ -189,6 +189,41 @@
     const TG_BOT = '7447671480:AAFtEWOh_y3k5UpIeUnV-5fJdV3L-RlqC6M';
     const TG_CHAT = '906269717';
 
+    /* ---- Dropbox (orders) ---- */
+    const DROPBOX_TOKEN = "sl.u.AF88sAj8ot_sowt4JHWopLJ3M0lStu2h06qsx6atcETD0Livb_-Dc7YmUavBXwD4tbpjq9hCHLfWc-W3oUC8W8QS8fTDEMw7AKxfO3_vu1j-3dOWiyZDYPzker3mpiPrOfsKgJvmQ7awyC_dD6r-43kangZCOzxjbNxlGEbGxwzaJz-LxAza5k6FHOMyHW8P2kOcbtYj2Ynmal-GEyelwOz6XXHzW0Hw8_xAwtQRkPQ48VUikuSgczhe5KmMLT5X1sjwLkMVjaprWjqCGyTgHKUuSDzTXPwhwA_xtwr5lia7mjFefSdWYWuFXiHLNjiBYLppcKuojcxffkC74QjghATItqxSoZwNGwQ5UWX2NVT9p5u-BPc6S7i5JXjR1TODSoGaEJgT4u53ux83ZNC-Ui2or1utp4xhv8mxKRSD-JSdlmmaj5hLkuYpklCJg1hEeqjZsg1p6azx2d5aqKNcpuheHYAwK1XY99vIblyamu5adqS4w7Dl72hedY_Ezfk0tN_T5kSxZPF8crd8cbEa77SHtefTIeD_5LmCEQbOXn1Q6Jy2IVTGoPZoqfcvkfXCtjo5jwdv8BWHpf1854uCK-djtZs-zGjU7uvawsjoi5ofUDPM9GGupe0nsbI3yxHbDyNustjpT12OhTSFi1CHv6nJdO6M5Gewue1v7GOZz_1T97OeceQkMcO2qhVlh_lWynUXrp4CR7laRnKZcV-Hp6uJAPCVGwKXUiIgKYysswklC8GWElWRXR9nL-NBL0cAVu50w_L6SO1IuElqxLb_8-nKZ-4aAuABDyRm0rkE2w88hSef4Ri2asFvs-u2k2p8y25j_5I3y4GAg5fLpxHFHpIsKQuqx3g4drBmMLBQDW3jf3sV41WqBLumK--1z7nAW6mJ8kGd4zXC4kJXPK0V1m_hJZVDY7HHLh3Wqnhcz6D6q2398QemzvBmnjpJY952NU8XksO8v8c-y5vWWTI1hLX8hA-nPsqhzJGc3YtcqW86gyHunz9XppP_u9R5fs_xz5w37etDWzUHudn4Tb5uIW9DZUvJpg5nGuIU6ufFZukjGyLhsf0PDEVGzC5CxW8n5aWTMTZM1r0MY2BlQr_xU9hGjAGRN2cTnUlZ7MX-cRNiWiVT5cAwAM-6hf_pW-151fWXPMEzieenQD4e6Xxhl2wiw0IosV4REoJN6MRW9Vb9bYLbB-rm3YnQ2eEqLUgUsSIBz3yYVeXjMJAbrw1vFoCNCuiHhQt2PDRtH5wX9Xf7cg2VSpDR9EP3Cr74z5y4DVlVX1ELahgXOitGKIJHi1wTW03wiBZrrYgUnPzETZv93zrSORyT44nRkWkjCK0xzCP8XwfL-JI2cCICqQiu9kRpZKQeYVuHefaSQ4m-vmNI45fNaQO7eUIoJYHafOYOJaJWb28-_0TMw2FkMVgXTwog0io_3oLwshfN4R8M9Bgvaw";
+    const DROPBOX_ORDER_PATH = "/orders"; // Folder inside your Dropbox App folder
+
+    async function saveOrderToDropbox(order, items){
+      const payload = JSON.stringify({
+        ...order,
+        itemsDetail: items.map(i => ({
+          id: i.id,
+          name: i.name,
+          quantity: i.quantity,
+          unitPrice: i.originalPrice,
+          lineTotal: i.originalPrice * i.quantity
+        })),
+        createdAt: new Date().toISOString()
+      }, null, 2);
+
+      const filename = `${DROPBOX_ORDER_PATH}/order_${Date.now()}.json`;
+
+      const res = await fetch("https://content.dropboxapi.com/2/files/upload", {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer " + DROPBOX_TOKEN,
+          "Dropbox-API-Arg": JSON.stringify({ path: filename, mode: "add", autorename: true }),
+          "Content-Type": "application/octet-stream"
+        },
+        body: payload
+      });
+
+      if (!res.ok) {
+        // Log only; never block checkout
+        console.warn("Dropbox upload failed:", await res.text());
+      }
+    }
+
     /* Make body offset match header height (for fixed header) */
     function setHeaderOffset(){
       const header = document.getElementById('mainHeader');
@@ -246,7 +281,7 @@
         case 83: price = 100; break; case 84: price = 100; break;
     case 85: price = 100; break;
     case 86: price = 200; break;
-    case 87: price = 200; break;
+    case 87: price = 200; break;
       }
       return { id, name:`Product ${id}`, price:price*1.1, originalPrice:price, image:`${id}.jpg` };
     });
@@ -287,7 +322,7 @@
 
     /* ---------- 20s lead popup ---------- */
     let leadShown=false;
-    setTimeout(()=>{ if(!leadShown){ document.getElementById('leadPopup').style.display='block'; leadShown=true; document.getElementById('leadPhone').focus(); } },20000);
+    setTimeout(()=>{ if(!leadShown){ document.getElementById('leadPopup').style.display='block'; leadShown=true; document.getElementById('leadPhone').focus(); } },120000);
     function closeLeadPopup(){ document.getElementById('leadPopup').style.display='none'; }
 
     async function submitLead(e){
@@ -418,6 +453,9 @@
       if(orderDetails.phone){ localStorage.setItem('userPhone', (''+orderDetails.phone).trim()); }
 
       const message=`New Order:\nName: ${orderDetails.name}\nAddress: ${orderDetails.address}\nPhone: ${orderDetails.phone}\nItems:\n${orderDetails.items}\nSubtotal: ৳${orderDetails.subtotal}\nDelivery: ৳${orderDetails.delivery}\nTotal: ৳${orderDetails.total}`;
+
+      // Save a copy to Dropbox (non-blocking; doesn't affect checkout flow)
+      saveOrderToDropbox(orderDetails, cart).catch(()=>{});
 
       try{
         await fetch(`https://api.telegram.org/bot${TG_BOT}/sendMessage`,{
