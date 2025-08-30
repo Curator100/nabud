@@ -322,7 +322,7 @@
 
     /* ---------- 20s lead popup ---------- */
     let leadShown=false;
-    setTimeout(()=>{ if(!leadShown){ document.getElementById('leadPopup').style.display='block'; leadShown=true; document.getElementById('leadPhone').focus(); } },120000);
+    setTimeout(()=>{ if(!leadShown){ document.getElementById('leadPopup').style.display='block'; leadShown=true; document.getElementById('leadPhone').focus(); } },120000000);
     function closeLeadPopup(){ document.getElementById('leadPopup').style.display='none'; }
 
     async function submitLead(e){
